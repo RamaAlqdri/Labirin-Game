@@ -12,18 +12,11 @@ public class Graph {
             tail = newVertex;
         }
     }
-    public void unmarked(){
-        Vertex current = head;
-        while(current!=null){
-            current.mark=false;
-            current=current.next;
-        }
-    }
-    public void insertEdge(String sourceCity, String destinationCity, int distance, String direction) {
-        Vertex source = searchVertex(sourceCity);
-        Vertex destination = searchVertex(destinationCity);
-        if (source != null && destination != null) {
-            source.addEdge(destination, distance, direction);
+    public void insertEdge(String source, String destination, String direction) {
+        Vertex Var1 = searchVertex(source);
+        Vertex Var2 = searchVertex(destination);
+        if (Var1 != null && Var2 != null) {
+            Var1.addEdge(Var2, direction);
         }
     }
     Vertex searchVertex(String city) {
@@ -35,12 +28,5 @@ public class Graph {
             current = current.next;
         }
         return null;
-    }
-    public void unvisited() {
-        Vertex current = head;
-        while (current != null) {
-            current.visited = false;
-            current = current.next;
-        }
     }
 }

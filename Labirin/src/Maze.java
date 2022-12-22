@@ -1,27 +1,24 @@
 import javax.swing.*;
-import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.util.Scanner;
 public class Maze extends JPanel {
     Graph graph;
     Map map = new Map();
-    Vertex vertex = null;
+    Vertex vertex;
     JButton buttonUp = new JButton();
     JButton buttonDown = new JButton();
     JButton buttonLeft = new JButton();
     JButton buttonRight = new JButton();
+    JButton reset = new JButton();
     Maze(){
         map.makemap();
         graph = map.map;
         vertex = graph.head;
-
+        vertex.cursor=true;
         this.setLayout(null);
         this.setPreferredSize(new Dimension(700,800));
-        this.setBackground(Color.DARK_GRAY);
+        this.setBackground(Color.decode("#c8c8c8"));
         buttonDown.setText("DOWN");
         buttonDown.setBounds(305,740,90,40);
         buttonDown.setBackground(Color.ORANGE);
@@ -34,11 +31,19 @@ public class Maze extends JPanel {
         buttonRight.setText("RIGHT");
         buttonRight.setBounds(405,740,90,40);
         buttonRight.setBackground(Color.ORANGE);
+        reset.setText("RESET");
+        reset.setBounds(600,745,75,35);
+        reset.setBackground(Color.ORANGE);
+
+        JLabel title = new JLabel("MAZE GAME");
+        title.setBounds(235,20,230,60);
+        title.setForeground(Color.BLACK);
+        title.setFont(new Font("Dungeon", Font.BOLD,35));
+
         buttonUp.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 navigateTo("Top");
-                System.out.println(vertex.name);
                 repaint();
             }
         });
@@ -46,7 +51,6 @@ public class Maze extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 navigateTo("Bottom");
-                System.out.println(vertex.name);
                 repaint();
             }
         });
@@ -54,7 +58,6 @@ public class Maze extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 navigateTo("Left");
-                System.out.println(vertex.name);
                 repaint();
             }
         });
@@ -62,56 +65,59 @@ public class Maze extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 navigateTo("Right");
-                System.out.println(vertex.name);
                 repaint();
             }
         });
-
+        reset.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                reset();
+                repaint();
+            }
+        });
         this.add(buttonUp);
         this.add(buttonDown);
         this.add(buttonLeft);
         this.add(buttonRight);
+        this.add(reset);
+        this.add(title);
     }
     public void paint(Graphics g){
+        if (vertex.visited){
+            JOptionPane.showMessageDialog(this,"Tidak Boleh");
+            reset();
+        }
+        if (vertex.name.equals("Finish")){
+            JOptionPane.showMessageDialog(this,"Finish");
+            reset();
+        }
         super.paint(g);
+        Graphics2D title = (Graphics2D) g;
+        title.setPaint(Color.BLACK);
         int xStart = 280;
         int yStart = 120;
         int size = 60;
         Vertex current = graph.head;
         current.x=xStart;
         current.y=yStart;
-        current.visited=true;
+
         while(current!=null){
-            Graphics2D lintasan = (Graphics2D) g;
             Edge.Node neighboor = current.edge.head;
-            while(neighboor!=null){
-                lintasan.setPaint(Color.WHITE);
-                if (!neighboor.destination.mark){
-                    int edgelenght;
-                    if (neighboor.direction.equals("Right")){
-                        neighboor.destination.x=current.x+neighboor.distance*size;
-                        neighboor.destination.y=current.y;
-                        edgelenght=neighboor.destination.x-current.x+size;
-                        lintasan.fillRect(current.x,current.y,edgelenght,size);
-                    }else if (neighboor.direction.equals("Left")){
-                        neighboor.destination.x=current.x-neighboor.distance*size;
-                        neighboor.destination.y=current.y;
-                        edgelenght=current.x-neighboor.destination.x+size;
-                        lintasan.fillRect(neighboor.destination.x,current.y,edgelenght,size);
-                    }else if (neighboor.direction.equals("Top")){
-                        neighboor.destination.x=current.x;
-                        neighboor.destination.y=current.y-neighboor.distance*size;
-                        edgelenght=current.y-neighboor.destination.y+size;
-                        lintasan.fillRect(current.x,neighboor.destination.y,size,edgelenght);
-                    }else if (neighboor.direction.equals("Bottom")){
-                        neighboor.destination.x=current.x;
-                        neighboor.destination.y=current.y+neighboor.distance*size;
-                        edgelenght=neighboor.destination.y-current.y+size;
-                        lintasan.fillRect(current.x,current.y,size,edgelenght);
-                    }
-                    neighboor.destination.mark=true;
+            while(neighboor!=null) {
+                if (neighboor.direction.equals("Right")) {
+                    neighboor.destination.x = current.x + size;
+                    neighboor.destination.y = current.y;
+                } else if (neighboor.direction.equals("Left")) {
+                    neighboor.destination.x = current.x - size;
+                    neighboor.destination.y = current.y;
+                } else if (neighboor.direction.equals("Top")) {
+                    neighboor.destination.x = current.x;
+                    neighboor.destination.y = current.y - size;
+                } else if (neighboor.direction.equals("Bottom")) {
+                    neighboor.destination.x = current.x;
+                    neighboor.destination.y = current.y + size;
                 }
-                neighboor=neighboor.next;
+                neighboor = neighboor.next;
             }
             current=current.next;
         }
@@ -119,32 +125,35 @@ public class Maze extends JPanel {
         while(current!=null){
             Graphics2D visit = (Graphics2D) g;
             if (current.visited){
-                visit.setPaint(Color.GRAY);
-                visit.fillRect(current.x, current.y,size,size);
+                visit.setPaint(Color.YELLOW);
+                visit.fillRect(current.x+size/4, current.y+size/4,size/2,size/2);
             }
             if (current.cursor){
                 visit.setPaint(Color.RED);
-                visit.fillRect(current.x, current.y,size,size);
+                visit.fillOval(current.x+size/4, current.y+size/4,size/2,size/2);
+                vertex.visited=true;
                 current.cursor=false;
             }
             current = current.next;
         }
         current = graph.head;
-        graph.unmarked();
         while(current!=null){
             Graphics2D batas = (Graphics2D) g;
-            batas.setPaint(Color.BLACK);
-            if (!current.isRightAvailable()){
-                batas.fillRect(current.x+size,current.y,6,size+6);
-            }
-            if (!current.isLeftAvailable()){
-                batas.fillRect(current.x,current.y,6,size);
-            }
-            if (!current.isTopAvailable()){
-                batas.fillRect(current.x,current.y,size,6);
-            }
-            if (!current.isBottomAvailable()){
-                batas.fillRect(current.x,current.y+size,size,6);
+            batas.setPaint(Color.black);
+            if (!(current.name.equals("Start")||current.name.equals("Finish"))){
+
+                if (!current.isRightAvailable()){
+                    batas.fillRect(current.x+size,current.y,6,size+6);
+                }
+                if (!current.isLeftAvailable()){
+                    batas.fillRect(current.x,current.y,6,size);
+                }
+                if (!current.isTopAvailable()){
+                    batas.fillRect(current.x,current.y,size,6);
+                }
+                if (!current.isBottomAvailable()){
+                    batas.fillRect(current.x,current.y+size,size,6);
+                }
             }
             current = current.next;
         }
@@ -152,23 +161,26 @@ public class Maze extends JPanel {
     }
     public void navigateTo(String decision){
         Edge.Node neighboor = vertex.edge.head;
+        String before = vertex.name;
         while (neighboor!=null){
             if (neighboor.direction.equals(decision)){
+                if (vertex.name.equals("Start")){
+                    vertex.cursor=false;
+                }
                 vertex = neighboor.destination;
-                vertex.visited=true;
                 vertex.cursor=true;
             }
             neighboor=neighboor.next;
         }
+        if (before.equals(vertex.name)){
+            vertex.cursor=true;
+            vertex.visited=false;
+        }
     }
-//    public void directionOf(Vertex vertex){
-//        Edge.Node neighboor = vertex.edge.head;
-//        while(neighboor!=null){
-//            System.out.println(neighboor.direction);
-//            neighboor=neighboor.next;
-//        }
-//    }
-//    public boolean isFinish(Vertex vertex){
-//        return(vertex.name.equals("Finish"));
-//    }
+    public void reset(){
+        map.makemap();
+        graph= map.map;
+        vertex = graph.head;
+        vertex.cursor=true;
+    }
 }

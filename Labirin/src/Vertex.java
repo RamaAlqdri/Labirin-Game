@@ -3,27 +3,14 @@ public class Vertex {
     Vertex next;
     boolean visited = false;
     boolean cursor = false;
-    boolean mark = false;
     int x=0;
     int y=0;
-    int estimated=0;
-    LinkedList history = new LinkedList();
     Vertex(String name) {
         this.name = name;
     }
     Edge edge = new Edge();
-    public void addEdge(Vertex destination, int distance, String direction) {
-        edge.addEdge(destination, distance, direction);
-    }
-    public int distanceTo(String direction){
-        Edge.Node current = edge.head;
-        while (current!=null){
-            if (current.direction.equals(direction)){
-                return current.distance;
-            }
-            current=current.next;
-        }
-        return 0;
+    public void addEdge(Vertex destination, String direction) {
+        edge.addEdge(destination, direction);
     }
     public boolean isRightAvailable(){
         Edge.Node current = edge.head;
