@@ -6,16 +6,16 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 public class MyFrame extends JFrame {
+    MyPanel panel;
     MyFrame(){
+        panel = new MyPanel();
+
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(500,500);
+
+        this.add(panel);
+        this.pack();
         this.setLocationRelativeTo(null);
         this.setVisible(true);
-    }
-    public void paint(Graphics g){
-        Graphics2D g2D = (Graphics2D) g;
-        g2D.setPaint(Color.BLUE);
-        g2D.fillRect(50,50,60,60);
-
     }
 }
