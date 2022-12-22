@@ -1,164 +1,174 @@
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.Scanner;
-public class Maze {
+public class Maze extends JPanel {
     Graph graph;
-    Vertex CURRENT=null;
-    public void play(JFrame frame){
-        Map map = new Map();
+    Map map = new Map();
+    Vertex vertex = null;
+    JButton buttonUp = new JButton();
+    JButton buttonDown = new JButton();
+    JButton buttonLeft = new JButton();
+    JButton buttonRight = new JButton();
+    Maze(){
         map.makemap();
         graph = map.map;
-        JLayeredPane layeredPane = new JLayeredPane();
-        CURRENT = graph.searchVertex("Start");
-        CURRENT.visited=true;
-        showmap(frame,graph,layeredPane);
-        frame.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) {
-            }
-            @Override
-            public void keyPressed(KeyEvent e) {
-                int keyCode = e.getKeyCode();
-                switch (keyCode){
-                    case KeyEvent.VK_DOWN:
-                        navigateTo("Bottom");
-                        System.out.println(e.getKeyCode());
-                        System.out.println(CURRENT.name);
-                        showmap(frame,graph,layeredPane);
-                        break;
-                    case KeyEvent.VK_UP:
-                        navigateTo("Top");
-                        break;
-                    case KeyEvent.VK_LEFT:
-                        navigateTo("Left");
-                        break;
-                    case KeyEvent.VK_RIGHT:
-                        navigateTo("Right");
-                        break;
+        vertex = graph.head;
 
-                }
-            }
+        this.setLayout(null);
+        this.setPreferredSize(new Dimension(700,800));
+        this.setBackground(Color.DARK_GRAY);
+        buttonDown.setText("DOWN");
+        buttonDown.setBounds(305,740,90,40);
+        buttonDown.setBackground(Color.ORANGE);
+        buttonUp.setText("UP");
+        buttonUp.setBounds(305,690,90,40);
+        buttonUp.setBackground(Color.ORANGE);
+        buttonLeft.setText("LEFT");
+        buttonLeft.setBounds(205,740,90,40);
+        buttonLeft.setBackground(Color.ORANGE);
+        buttonRight.setText("RIGHT");
+        buttonRight.setBounds(405,740,90,40);
+        buttonRight.setBackground(Color.ORANGE);
+        buttonUp.addActionListener(new ActionListener() {
             @Override
-            public void keyReleased(KeyEvent e) {
-
+            public void actionPerformed(ActionEvent e) {
+                navigateTo("Top");
+                System.out.println(vertex.name);
+                repaint();
             }
         });
+        buttonDown.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                navigateTo("Bottom");
+                System.out.println(vertex.name);
+                repaint();
+            }
+        });
+        buttonLeft.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                navigateTo("Left");
+                System.out.println(vertex.name);
+                repaint();
+            }
+        });
+        buttonRight.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                navigateTo("Right");
+                System.out.println(vertex.name);
+                repaint();
+            }
+        });
+
+        this.add(buttonUp);
+        this.add(buttonDown);
+        this.add(buttonLeft);
+        this.add(buttonRight);
     }
-    public void showmap(JFrame frame, Graph graph, JLayeredPane layeredPane){
-        layeredPane.setBounds(0,0,700,800);
-        Vertex current = graph.head;
+    public void paint(Graphics g){
+        super.paint(g);
         int xStart = 280;
         int yStart = 120;
         int size = 60;
-        JLabel start = new JLabel();
-        start.setBounds(xStart,yStart,size,size);
-        start.setBackground(Color.white);
-        frame.add(start);
-        current.mark=true;
+        Vertex current = graph.head;
         current.x=xStart;
         current.y=yStart;
-        while (current!=null){
+        current.visited=true;
+        while(current!=null){
+            Graphics2D lintasan = (Graphics2D) g;
             Edge.Node neighboor = current.edge.head;
             while(neighboor!=null){
-                JLabel box = new JLabel();
+                lintasan.setPaint(Color.WHITE);
                 if (!neighboor.destination.mark){
-                    int edgelenght=0;
+                    int edgelenght;
                     if (neighboor.direction.equals("Right")){
                         neighboor.destination.x=current.x+neighboor.distance*size;
                         neighboor.destination.y=current.y;
                         edgelenght=neighboor.destination.x-current.x+size;
-                        box.setBounds(current.x,current.y,edgelenght,size);
-                    }
-                    else if (neighboor.direction.equals("Left")){
+                        lintasan.fillRect(current.x,current.y,edgelenght,size);
+                    }else if (neighboor.direction.equals("Left")){
                         neighboor.destination.x=current.x-neighboor.distance*size;
                         neighboor.destination.y=current.y;
                         edgelenght=current.x-neighboor.destination.x+size;
-                        box.setBounds(neighboor.destination.x,current.y,edgelenght,size);
-                    }
-                    else if (neighboor.direction.equals("Top")){
+                        lintasan.fillRect(neighboor.destination.x,current.y,edgelenght,size);
+                    }else if (neighboor.direction.equals("Top")){
                         neighboor.destination.x=current.x;
                         neighboor.destination.y=current.y-neighboor.distance*size;
                         edgelenght=current.y-neighboor.destination.y+size;
-                        box.setBounds(current.x,neighboor.destination.y,size,edgelenght);
-                    }
-                    else if (neighboor.direction.equals("Bottom")){
+                        lintasan.fillRect(current.x,neighboor.destination.y,size,edgelenght);
+                    }else if (neighboor.direction.equals("Bottom")){
                         neighboor.destination.x=current.x;
                         neighboor.destination.y=current.y+neighboor.distance*size;
                         edgelenght=neighboor.destination.y-current.y+size;
-                        box.setBounds(current.x,current.y,size,edgelenght);
+                        lintasan.fillRect(current.x,current.y,size,edgelenght);
                     }
                     neighboor.destination.mark=true;
                 }
-                if (neighboor.destination.visited){
-                    box.setBackground(Color.DARK_GRAY);
-                }else{
-                    box.setBackground(Color.white);
-                }
-                box.setOpaque(true);
-                layeredPane.add(box, Integer.valueOf(0));
-
-                line(current,frame,size,layeredPane);
                 neighboor=neighboor.next;
             }
             current=current.next;
         }
-        layeredPane.repaint();
-        frame.add(layeredPane);
-        frame.setVisible(true);
-    }
-    public void line(Vertex vertex,JFrame frame,int size, JLayeredPane layeredPane){
-        if (!vertex.isRightAvailable()){
-            JLabel line = new JLabel();
-            line.setBounds(vertex.x+size,vertex.y,6,size+6);
-            line.setBackground(Color.black);
-            line.setOpaque(true);
-            layeredPane.add(line, Integer.valueOf(2));
+        current = graph.head;
+        while(current!=null){
+            Graphics2D visit = (Graphics2D) g;
+            if (current.visited){
+                visit.setPaint(Color.GRAY);
+                visit.fillRect(current.x, current.y,size,size);
+            }
+            if (current.cursor){
+                visit.setPaint(Color.RED);
+                visit.fillRect(current.x, current.y,size,size);
+                current.cursor=false;
+            }
+            current = current.next;
         }
-        if (!vertex.isLeftAvailable()){
-            JLabel line = new JLabel();
-            line.setBounds(vertex.x,vertex.y,6,size);
-            line.setBackground(Color.black);
-            line.setOpaque(true);
-            layeredPane.add(line, Integer.valueOf(2));
+        current = graph.head;
+        graph.unmarked();
+        while(current!=null){
+            Graphics2D batas = (Graphics2D) g;
+            batas.setPaint(Color.BLACK);
+            if (!current.isRightAvailable()){
+                batas.fillRect(current.x+size,current.y,6,size+6);
+            }
+            if (!current.isLeftAvailable()){
+                batas.fillRect(current.x,current.y,6,size);
+            }
+            if (!current.isTopAvailable()){
+                batas.fillRect(current.x,current.y,size,6);
+            }
+            if (!current.isBottomAvailable()){
+                batas.fillRect(current.x,current.y+size,size,6);
+            }
+            current = current.next;
         }
-        if (!vertex.isTopAvailable()){
-            JLabel line = new JLabel();
-            line.setBounds(vertex.x,vertex.y,size,6);
-            line.setBackground(Color.black);
-            line.setOpaque(true);
-            layeredPane.add(line, Integer.valueOf(2));
-        }
-        if (!vertex.isBottomAvailable()){
-            JLabel line = new JLabel();
-            line.setBounds(vertex.x,vertex.y+size,size,6);
-            line.setBackground(Color.black);
-            line.setOpaque(true);
-            layeredPane.add(line, Integer.valueOf(2));
-        }
-
 
     }
     public void navigateTo(String decision){
-        Edge.Node neighboor = CURRENT.edge.head;
+        Edge.Node neighboor = vertex.edge.head;
         while (neighboor!=null){
             if (neighboor.direction.equals(decision)){
-                CURRENT = neighboor.destination;
-                CURRENT.visited=true;
+                vertex = neighboor.destination;
+                vertex.visited=true;
+                vertex.cursor=true;
             }
             neighboor=neighboor.next;
         }
     }
-    public void directionOf(Vertex vertex){
-        Edge.Node neighboor = vertex.edge.head;
-        while(neighboor!=null){
-            System.out.println(neighboor.direction);
-            neighboor=neighboor.next;
-        }
-    }
-    public boolean isFinish(Vertex vertex){
-        return(vertex.name.equals("Finish"));
-    }
+//    public void directionOf(Vertex vertex){
+//        Edge.Node neighboor = vertex.edge.head;
+//        while(neighboor!=null){
+//            System.out.println(neighboor.direction);
+//            neighboor=neighboor.next;
+//        }
+//    }
+//    public boolean isFinish(Vertex vertex){
+//        return(vertex.name.equals("Finish"));
+//    }
 }

@@ -12,6 +12,13 @@ public class Graph {
             tail = newVertex;
         }
     }
+    public void unmarked(){
+        Vertex current = head;
+        while(current!=null){
+            current.mark=false;
+            current=current.next;
+        }
+    }
     public void insertEdge(String sourceCity, String destinationCity, int distance, String direction) {
         Vertex source = searchVertex(sourceCity);
         Vertex destination = searchVertex(destinationCity);
