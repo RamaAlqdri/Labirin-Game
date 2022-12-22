@@ -25,7 +25,6 @@ public class Edge {
         }
         return 0;
     }
-
     public Vertex minDistance(){
         if (head==null){
             return null;
@@ -37,14 +36,11 @@ public class Edge {
                 if (current.distance<=min){
                     min = current.distance;
                     tes = current.destination;
-
                 }
                 current=current.next;
             }
             return tes;
-
         }
-
     }
     public void addEdge(Vertex destination, int distance, String direction) {
         Node newEdge = new Node(destination, distance, direction);

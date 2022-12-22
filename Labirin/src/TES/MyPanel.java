@@ -2,22 +2,29 @@ package TES;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 
-public class MyPanel extends JPanel implements KeyListener {
+public class MyPanel extends JPanel {
     Timer timer;
     int xVelo = 10;
     int yVelo = 1;
     int x = 0;
     int y = 0;
+    JButton tes = new JButton();
+
     MyPanel(){
         this.setPreferredSize(new Dimension(500,500));
         this.setBackground(Color.black);
-//        timer
-//        timer = new Timer(1000,this)
+        tes.setText("TES");
+        tes.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                x=x+xVelo;
+                repaint();
+            }
+        });
+        this.add(tes);
+//        timer = new Timer(1000,this);
 //        timer.start();
     }
     public void paint(Graphics g){
@@ -29,29 +36,10 @@ public class MyPanel extends JPanel implements KeyListener {
 
 //    @Override
 //    public void actionPerformed(ActionEvent e) {
+//        e.getActionCommand(KeyStroke.getKeyStroke());
 //        x = x+xVelo;
 //        repaint();
 //    }
 
-    @Override
-    public void keyTyped(KeyEvent e) {
 
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        int keyCode = e.getKeyCode();
-        switch (keyCode){
-            case KeyEvent.VK_ENTER:
-                x = x+xVelo;
-                System.out.println(x);
-                repaint();
-        }
-
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-
-    }
 }

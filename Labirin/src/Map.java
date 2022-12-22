@@ -4,8 +4,7 @@ import java.awt.*;
 public class Map {
     Graph map;
     public void makemap() {
-        Graph map =  new Graph();
-        this.map = map;
+        map =  new Graph();
 //        map.addVertex("Start");
 //        map.addVertex("1");
 //        map.addVertex("3");

@@ -11,7 +11,5 @@ public class Main {
         frame.getContentPane().setBackground(Color.gray);
         Maze maze = new Maze();
         maze.play(frame);
-
-
     }
 }
