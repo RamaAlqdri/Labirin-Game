@@ -1,8 +1,8 @@
 public class Graph {
     Vertex head = null;
     Vertex tail = null;
-    public void addVertex(String city) {
-        Vertex newVertex = new Vertex(city);
+    public void addVertex(String name) {
+        Vertex newVertex = new Vertex(name);
         if (head == null) {
             head = newVertex;
             tail = newVertex;
@@ -19,10 +19,10 @@ public class Graph {
             Var1.addEdge(Var2, direction);
         }
     }
-    Vertex searchVertex(String city) {
+    Vertex searchVertex(String name) {
         Vertex current = head;
         while (current != null) {
-            if (current.name.equals(city)) {
+            if (current.name.equals(name)) {
                 return current;
             }
             current = current.next;
