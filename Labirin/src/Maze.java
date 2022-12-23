@@ -87,7 +87,7 @@ public class Maze extends JPanel {
     public void paint(Graphics g){
 
         if (vertex.visited){
-            JOptionPane.showMessageDialog(this,"Anda tidak diperbolehkan \n melewati jalur yang sama ");
+            JOptionPane.showMessageDialog(this,"Anda tidak diperbolehkan \n melewati jalur telah dilewati ");
             reset();
         }
         if (vertex.name.equals("Finish")){
