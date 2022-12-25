@@ -9,7 +9,6 @@ public class Map {
         }
         dataMap.addVertex("Finish");
 
-
         dataMap.insertEdge("Start","1","Bottom");
         dataMap.insertEdge("1","Start","Top");
         dataMap.insertEdge("1","2","Bottom");

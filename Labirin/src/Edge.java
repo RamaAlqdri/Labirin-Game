@@ -23,5 +23,4 @@ public class Edge {
             tail = newEdge;
         }
     }
-
 }

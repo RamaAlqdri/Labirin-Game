@@ -5,10 +5,10 @@ public class Vertex {
     boolean cursor = false;
     int x=0;
     int y=0;
+    Edge edge = new Edge();
     Vertex(String name) {
         this.name = name;
     }
-    Edge edge = new Edge();
     public void addEdge(Vertex destination, String direction) {
         edge.addEdge(destination, direction);
     }
